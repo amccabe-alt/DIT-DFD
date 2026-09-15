@@ -1,0 +1,729 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BTEC DIT Data Flow Diagram Lab</title>
+<style>
+:root{--navy:#16243a;--blue:#2563eb;--cyan:#0ea5e9;--bg:#f4f7fb;--card:#fff;--ink:#172033;--muted:#667085;--ok:#16803a;--bad:#b42318;--amber:#b54708;--line:#d8e0ec}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(120deg,#132238,#1e3a5f);color:white;padding:22px 28px}
+header h1{margin:0 0 6px;font-size:28px} header p{margin:0;opacity:.9}
+.tabs{display:flex;gap:8px;padding:12px 20px;background:white;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.tabs button,.btn{border:0;border-radius:9px;padding:10px 14px;font-weight:700;cursor:pointer}
+.tabs button{background:#edf2f7;color:#26364d}.tabs button.active,.btn.primary{background:var(--blue);color:white}
+.btn.secondary{background:#e8eef7;color:#23324a}.btn.danger{background:#fee4e2;color:#912018}
+main{max-width:1320px;margin:auto;padding:20px}.panel{display:none}.panel.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.card{background:white;border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 2px 8px #1018280a}
+.card h2,.card h3{margin-top:0}.symbol-demo{height:95px;display:flex;align-items:center;justify-content:center;background:#f8fafc;border-radius:10px;margin-bottom:12px}
+.note{border-left:4px solid var(--cyan);padding:12px 14px;background:#eefaff;border-radius:8px;margin:14px 0}
+.exam{border-left-color:#8b5cf6;background:#f5f3ff}.warning{border-left-color:#f59e0b;background:#fffbeb}
+table{border-collapse:collapse;width:100%}th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left}
+.quizq{margin:14px 0;padding:14px;border:1px solid var(--line);border-radius:10px}.quizq label{display:block;margin:7px 0}
+.practice-layout{display:grid;grid-template-columns:290px 1fr;gap:16px}
+@media(max-width:850px){.practice-layout{grid-template-columns:1fr}.tabs{overflow:auto}}
+.sidebar{display:flex;flex-direction:column;gap:12px}
+.scenario{font-size:15px;line-height:1.65}
+.highlight-tools{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.highlight-btn{border:1px solid var(--line);border-radius:8px;padding:7px 9px;background:#fff;font-size:12px;font-weight:700;cursor:pointer}
+.hl-entity{background:#e0f2fe;border-bottom:3px solid #0284c7;border-radius:3px;padding:1px 2px}
+.hl-process{background:#dcfce7;border-bottom:3px solid #16a34a;border-radius:3px;padding:1px 2px}
+.hl-store{background:#fef3c7;border-bottom:3px solid #d97706;border-radius:3px;padding:1px 2px}
+.hl-flow{background:#f3e8ff;border-bottom:3px solid #9333ea;border-radius:3px;padding:1px 2px}
+.legend-key{display:inline-flex;align-items:center;gap:5px;margin:3px 8px 3px 0;font-size:12px}
+.legend-swatch{width:14px;height:14px;border-radius:3px;display:inline-block}
+.support-note{font-size:12px;color:var(--muted);line-height:1.4}.toolbox{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tool{padding:10px 8px;border:1px solid var(--line);background:white;border-radius:9px;cursor:pointer;font-weight:700}.tool.selected{outline:3px solid #93c5fd}
+.canvas-wrap{background:white;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.canvas-head{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:1px solid var(--line);gap:8px;flex-wrap:wrap}
+#canvas{width:100%;height:590px;display:block;background-color:#fbfdff;background-image:linear-gradient(#e8edf5 1px,transparent 1px),linear-gradient(90deg,#e8edf5 1px,transparent 1px);background-size:25px 25px}
+.node{cursor:grab;touch-action:none}.node:active{cursor:grabbing}.node text{font-size:13px;font-weight:700;pointer-events:none;user-select:none}.node-input{width:116px;height:28px;border:0;background:transparent;text-align:center;font:700 13px Segoe UI,Arial,sans-serif;color:#172033;outline:none;padding:2px}.node-input:focus{background:#eff6ff;box-shadow:inset 0 0 0 2px #93c5fd;border-radius:5px}.edge{stroke:#344054;stroke-width:2.4;fill:none}.edge-label{font-size:12px;font-weight:600;fill:#344054}.edge-input{width:116px;height:26px;border:1px solid #cfd8e6;border-radius:6px;background:#fff;text-align:center;font:600 12px Segoe UI,Arial,sans-serif;color:#344054;outline:none;padding:2px 5px}.edge-input:focus{border-color:#2563eb;box-shadow:0 0 0 2px #bfdbfe}
+.hintbox{margin-top:10px;padding:11px 12px;border-radius:9px;background:#f8fafc;border:1px solid #d8e0ec;color:#344054;font-size:13px;line-height:1.45}.hintbox strong{color:#172033}.hintbox.good{background:#ecfdf3;border-color:#abefc6;color:#067647}.feedback{margin-top:12px;padding:12px;border-radius:9px;display:none}.feedback.ok{display:block;background:#ecfdf3;color:#067647}.feedback.bad{display:block;background:#fef3f2;color:#b42318}.feedback.warn{display:block;background:#fffbeb;color:#b54708}
+.progress{height:10px;background:#e5e7eb;border-radius:999px;overflow:hidden}.progress div{height:100%;background:var(--blue)}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#e8eef7;font-size:12px;font-weight:700}.score{font-size:30px;font-weight:800}
+.small{font-size:13px;color:var(--muted)}.hidden{display:none!important}
+kbd{background:#eef2f6;border:1px solid #d0d5dd;border-bottom-width:2px;border-radius:5px;padding:1px 5px}
+
+.exam-workspace{margin-top:14px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fbfdff}
+.exam-toolbar{display:flex;gap:8px;flex-wrap:wrap;padding:10px;border-bottom:1px solid var(--line);background:white}
+.exam-tool{padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:white;font-weight:700;cursor:pointer}
+.exam-tool.selected{outline:3px solid #93c5fd}
+.exam-canvas{width:100%;height:430px;display:block;background-color:#fbfdff;background-image:linear-gradient(#e8edf5 1px,transparent 1px),linear-gradient(90deg,#e8edf5 1px,transparent 1px);background-size:25px 25px}
+.exam-actions{display:flex;gap:8px;flex-wrap:wrap;padding:10px;border-top:1px solid var(--line);background:white}
+.exam-feedback{margin:10px;padding:12px;border-radius:9px;display:none}
+.exam-feedback.ok{display:block;background:#ecfdf3;color:#067647}
+.exam-feedback.bad{display:block;background:#fef3f2;color:#b42318}
+.exam-feedback.warn{display:block;background:#fffbeb;color:#b54708}
+.exam-score{font-size:20px;font-weight:800}
+
+</style>
+</head>
+<body>
+<header>
+  <h1>Data Flow Diagram Lab</h1>
+  <p>Pearson BTEC Level 1/Level 2 Tech Award in Digital Information Technology • Component 3 practice</p>
+</header>
+<nav class="tabs">
+  <button class="active" data-tab="learn">1. Learn</button>
+  <button data-tab="check">2. Check Understanding</button>
+  <button data-tab="practice">3. Build DFDs</button>
+  <button data-tab="exam">4. Exam Practice</button>
+</nav>
+<main>
+<section id="learn" class="panel active">
+  <div class="card">
+    <h2>What is a Data Flow Diagram?</h2>
+    <p>A DFD shows <strong>how data moves through a system</strong>. It focuses on where data comes from, what happens to it, where it is stored, and where it goes. It does not show program logic or decision-making in the same way as a flowchart.</p>
+    <div class="note exam"><strong>BTEC DIT link:</strong> Component 3, Learning outcome D includes interpreting and using forms of notation such as data flow diagrams, flowcharts and system diagrams. In an exam, accurate notation, connections/direction of data flow and coverage of the scenario all matter.</div>
+  </div>
+  <h2>Core DFD symbols</h2><div class="note"><strong>Symbol convention used in this resource:</strong> external entity/data source or destination = <strong>oval</strong>; process = <strong>rectangle</strong>; data store = open-ended store symbol; data flow = labelled directional arrow.</div>
+  <div class="grid">
+    <div class="card"><div class="symbol-demo"><svg width="190" height="75"><ellipse cx="95" cy="38" rx="65" ry="25" fill="white" stroke="#172033" stroke-width="2"/><text x="95" y="43" text-anchor="middle">Customer</text></svg></div><h3>External Entity</h3><p>A person, organisation or external system that sends data to, or receives data from, the system.</p><p class="small">Example: Customer, Supplier, Bank.</p></div>
+    <div class="card"><div class="symbol-demo"><svg width="190" height="75"><rect x="30" y="13" width="130" height="50" fill="white" stroke="#172033" stroke-width="2"/><text x="95" y="43" text-anchor="middle">Process</text></svg></div><h3>Process</h3><p>Something that transforms, checks, calculates, creates or otherwise handles data.</p><p class="small">Use a verb phrase: “Validate login”, “Calculate total”.</p></div>
+    <div class="card"><div class="symbol-demo"><svg width="190" height="75"><path d="M35 20 H155 M35 56 H155" stroke="#172033" stroke-width="2"/><text x="95" y="42" text-anchor="middle">Orders</text></svg></div><h3>Data Store</h3><p>A place where data is held for later use, such as a database, file or table.</p><p class="small">Example: Customer records, Orders database.</p></div>
+    <div class="card"><div class="symbol-demo"><svg width="190" height="75"><defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z"/></marker></defs><line x1="30" y1="38" x2="155" y2="38" stroke="#172033" stroke-width="2" marker-end="url(#a)"/><text x="92" y="28" text-anchor="middle">order details</text></svg></div><h3>Data Flow</h3><p>A labelled arrow showing data moving from one part of the system to another.</p><p class="small">Label with the data, not an action: “payment details”, not “pay”.</p></div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h2>Rules students should remember</h2>
+    <table><tr><th>Rule</th><th>Why?</th></tr>
+      <tr><td>Every arrow needs a direction and useful data label.</td><td>The examiner must be able to see what data moves and where.</td></tr>
+      <tr><td>Processes should be actions.</td><td>A process changes or uses data.</td></tr>
+      <tr><td>Do not normally connect entity → entity directly.</td><td>The system needs a process between them.</td></tr>
+      <tr><td>Do not normally connect store → store directly.</td><td>A process should move/transform the data.</td></tr>
+      <tr><td>Read the scenario for nouns and verbs.</td><td>Nouns often suggest entities/stores/data; verbs often suggest processes.</td></tr>
+    </table>
+  </div>
+</section>
+
+<section id="check" class="panel">
+ <div class="card"><h2>Quick knowledge check</h2><p>Answer all questions, then mark them instantly.</p><div id="quiz"></div><button class="btn primary" onclick="markQuiz()">Mark quiz</button><div id="quizResult" class="feedback"></div></div>
+</section>
+
+<section id="practice" class="panel">
+ <div class="practice-layout">
+  <aside class="sidebar">
+   <div class="card">
+    <span class="badge" id="qbadge">Practice 1 of 6</span>
+    <h3 id="qtitle"></h3>
+    <div id="qscenario" class="scenario" aria-label="Practice scenario"></div>
+    <div class="highlight-tools">
+      <button class="highlight-btn" onclick="applyHighlight('entity')">Highlight Entity</button>
+      <button class="highlight-btn" onclick="applyHighlight('process')">Highlight Process</button>
+      <button class="highlight-btn" onclick="applyHighlight('store')">Highlight Data Store</button>
+      <button class="highlight-btn" onclick="applyHighlight('flow')">Highlight Data Flow</button>
+      <button class="highlight-btn" onclick="clearHighlights()">Clear highlights</button>
+      <button class="highlight-btn" onclick="showClues()">Show clues</button>
+    </div>
+    <div class="support-note">
+      Select a word or phrase in the question, then choose what you think it represents.
+      <div>
+        <span class="legend-key"><span class="legend-swatch" style="background:#e0f2fe"></span>Entity</span>
+        <span class="legend-key"><span class="legend-swatch" style="background:#dcfce7"></span>Process</span>
+        <span class="legend-key"><span class="legend-swatch" style="background:#fef3c7"></span>Data Store</span>
+        <span class="legend-key"><span class="legend-swatch" style="background:#f3e8ff"></span>Data Flow</span>
+      </div>
+    </div>
+    <div class="note"><strong>Your task:</strong> <span id="qtask"></span></div>
+    <div class="progress"><div id="prog" style="width:16.6%"></div></div>
+   </div>
+   <div class="card"><h3>Diagram tools</h3>
+    <div class="toolbox">
+     <button class="tool" data-tool="entity">⬭ Entity</button><button class="tool" data-tool="process">▭ Process</button>
+     <button class="tool" data-tool="store">═ Store</button><button class="tool" data-tool="flow">→ Data flow</button>
+    </div>
+    <p class="small">Select a symbol, then click the grid. A name box appears inside each symbol so students can type directly into it. Drag the outline/blank area of a symbol to move it freely anywhere on the grid. For a data flow, click the source then the destination. Then type directly into the text box on the arrow to name the data being transferred. Opposite-direction flows are automatically separated so both labels remain readable. If you try to connect entity-to-entity or store-to-store, the system will warn you because a process should normally sit between them.</p><div id="liveHint" class="hintbox"><strong>Hint:</strong> Start by identifying the external entity, the process, and any data stores mentioned in the scenario.</div>
+    <button class="btn secondary" onclick="undo()">Undo</button> <button class="btn danger" onclick="clearCanvas()">Clear</button>
+   </div>
+   <div class="card">
+    <button class="btn primary" onclick="checkDiagram()">Check my DFD</button>
+    <button class="btn secondary" onclick="showModel()">Show model</button>
+    <div id="dfdFeedback" class="feedback"></div>
+    <div style="margin-top:10px;display:flex;justify-content:space-between"><button class="btn secondary" onclick="prevQ()">← Previous</button><button class="btn primary" onclick="nextQ()">Next →</button></div>
+   </div>
+  </aside>
+  <div class="canvas-wrap"><div class="canvas-head"><strong>Live DFD workspace</strong><span class="small">Tip: drag symbols to tidy the layout</span></div>
+   <svg id="canvas" viewBox="0 0 950 590"><defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#344054"/></marker></defs><g id="edges"></g><g id="nodes"></g></svg>
+  </div>
+ </div>
+</section>
+
+
+<section id="exam" class="panel">
+ <div class="card">
+   <h2>Exam-style practice</h2>
+   <p>These are original questions written in the style and demand of Pearson Component 3. Each question includes a live DFD workspace and automatic marking.</p>
+   <div class="note exam"><strong>Exam technique:</strong> make sure you use the correct symbols, show the correct direction of data flow, label arrows with the data being transferred, and include all important parts of the scenario.</div>
+   <div id="examQs"></div>
+ </div>
+</section>
+</main>
+<script>
+const quizData=[
+ ["Which DFD symbol represents data held for later use?",["External entity","Data store","Process","Data flow"],1],
+ ["Which is the best name for a process?",["Customer details","Customer","Validate customer details","Customers table"],2],
+ ["What should normally be written beside a data-flow arrow?",["A data item or group of data","A decision","A yes/no condition","A line number"],0],
+ ["Which connection would normally need a process between the two items?",["Entity → process","Process → store","Store → store","Process → entity"],2],
+ ["A customer sends an email address into a registration system. What is the email address?",["Process","Data flow","Data store","External entity"],1],
+ ["Which statement best describes a DFD?",["It shows program decisions","It shows movement and handling of data","It shows physical network cables","It shows a project timeline"],1]
+];
+function buildQuiz(){let h="";quizData.forEach((q,i)=>{h+=`<div class="quizq"><strong>${i+1}. ${q[0]}</strong>`;q[1].forEach((o,j)=>h+=`<label><input type="radio" name="q${i}" value="${j}"> ${o}</label>`);h+="</div>"});document.getElementById("quiz").innerHTML=h}
+function markQuiz(){let s=0;quizData.forEach((q,i)=>{let x=document.querySelector(`input[name=q${i}]:checked`);if(x&&+x.value===q[2])s++});let r=document.getElementById("quizResult");r.className="feedback "+(s>=5?"ok":"bad");r.innerHTML=`<strong>${s}/6</strong> — ${s==6?"Excellent. You are ready to build DFDs.":s>=4?"Good start. Review any symbols/rules you missed.":"Go back to the Learn tab and review the four symbols."}`}
+buildQuiz();
+
+
+let savedSelection=null;
+
+document.addEventListener("selectionchange",()=>{
+ const sel=window.getSelection();
+ if(!sel||sel.rangeCount===0)return;
+ const range=sel.getRangeAt(0);
+ const scenario=document.getElementById("qscenario");
+ if(scenario && scenario.contains(range.commonAncestorContainer) && !range.collapsed){
+   savedSelection=range.cloneRange();
+ }
+});
+
+function applyHighlight(type){
+ if(!savedSelection)return;
+ const scenario=document.getElementById("qscenario");
+ if(!scenario || !scenario.contains(savedSelection.commonAncestorContainer))return;
+ const span=document.createElement("span");
+ span.className="hl-"+type;
+ span.dataset.kind=type;
+ try{
+   savedSelection.surroundContents(span);
+ }catch(e){
+   const text=savedSelection.toString();
+   if(!text)return;
+   span.textContent=text;
+   savedSelection.deleteContents();
+   savedSelection.insertNode(span);
+ }
+ window.getSelection().removeAllRanges();
+ savedSelection=null;
+}
+
+function clearHighlights(){
+ const q=scenarios[qi];
+ document.getElementById("qscenario").innerHTML=esc(q.scenario);
+ savedSelection=null;
+}
+
+function highlightPhrase(container,phrase,type){
+ if(!phrase)return;
+ const walker=document.createTreeWalker(container,NodeFilter.SHOW_TEXT);
+ let node;
+ while(node=walker.nextNode()){
+   const lower=node.nodeValue.toLowerCase();
+   const idx=lower.indexOf(phrase.toLowerCase());
+   if(idx!==-1){
+     const before=node.nodeValue.slice(0,idx);
+     const match=node.nodeValue.slice(idx,idx+phrase.length);
+     const after=node.nodeValue.slice(idx+phrase.length);
+     const frag=document.createDocumentFragment();
+     if(before)frag.appendChild(document.createTextNode(before));
+     const span=document.createElement("span");
+     span.className="hl-"+type;
+     span.dataset.kind=type;
+     span.textContent=match;
+     frag.appendChild(span);
+     if(after)frag.appendChild(document.createTextNode(after));
+     node.parentNode.replaceChild(frag,node);
+     return true;
+   }
+ }
+ return false;
+}
+
+function showClues(){
+ clearHighlights();
+ const q=scenarios[qi],container=document.getElementById("qscenario");
+ ["entity","process","store","flow"].forEach(type=>{
+   (q.clues?.[type]||[]).forEach(p=>highlightPhrase(container,p,type));
+ });
+ mainHint("Use the highlighted clues to decide which symbols you need. Entity = who/what is outside the system; Process = action; Data Store = where data is kept; Data Flow = the data moving between them.");
+}
+
+const scenarios=[
+ {title:"Online Library Reservation",clues:{entity:["student"],process:["searches","submits","records","sends"],store:["Book Catalogue","Reservations"],flow:["book information","reservation request","confirmation"]},scenario:"A student searches for a book. The system reads book information from the Book Catalogue. The student submits a reservation request. The system records the reservation in the Reservations store and sends a confirmation to the student.",task:"Build a DFD showing the student, the main process, both data stores/uses and the important data flows.",nodes:[["entity","Student"],["process","Reserve book"],["store","Book Catalogue"],["store","Reservations"]],edges:[["Student","Reserve book","search / reservation details"],["Book Catalogue","Reserve book","book information"],["Reserve book","Reservations","reservation record"],["Reserve book","Student","confirmation"]]},
+ {title:"School Lunch Payment",clues:{entity:["parent"],process:["submits","checks","updates","returns"],store:["Student Accounts"],flow:["payment details","student ID","account","balance","payment confirmation"]},scenario:"A parent submits payment details and a student ID. The payment process checks the student's account in the Student Accounts database, updates the balance and returns a payment confirmation to the parent.",task:"Represent the parent, payment process, student account data store and the key flows.",nodes:[["entity","Parent"],["process","Process lunch payment"],["store","Student Accounts"]],edges:[["Parent","Process lunch payment","payment details / student ID"],["Student Accounts","Process lunch payment","account details"],["Process lunch payment","Student Accounts","updated balance"],["Process lunch payment","Parent","confirmation"]]},
+ {title:"Cinema Booking",clues:{entity:["customer"],process:["chooses","submits","reads","writes","sends"],store:["Screenings","Bookings"],flow:["booking details","available seats","e-ticket"]},scenario:"A customer chooses a screening and submits booking details. The booking process reads available seats from the Screenings store, writes the completed booking to the Bookings store and sends an e-ticket to the customer.",task:"Build a clear DFD with correctly directed and labelled flows.",nodes:[["entity","Customer"],["process","Create booking"],["store","Screenings"],["store","Bookings"]],edges:[["Customer","Create booking","booking details"],["Screenings","Create booking","available seats"],["Create booking","Bookings","booking record"],["Create booking","Customer","e-ticket"]]},
+ {title:"Medical Appointment Request",clues:{entity:["patient"],process:["submits","checks","saves","sends"],store:["Appointments"],flow:["appointment preferences","availability","confirmed appointment","appointment details"]},scenario:"A patient submits appointment preferences. The system checks clinician availability stored in the Appointments database. It saves the confirmed appointment and sends the appointment details back to the patient.",task:"Show how patient and appointment data move through the system.",nodes:[["entity","Patient"],["process","Book appointment"],["store","Appointments"]],edges:[["Patient","Book appointment","appointment preferences"],["Appointments","Book appointment","availability"],["Book appointment","Appointments","confirmed appointment"],["Book appointment","Patient","appointment details"]]},
+ {title:"Online Shop Order",clues:{entity:["customer"],process:["sends","reads","saves"],store:["Products","Orders"],flow:["order details","product and price information","total","order confirmation"]},scenario:"A customer sends order details. The order system reads product and price information from the Products database, saves the order to Orders, and sends the total and order confirmation to the customer.",task:"Create the DFD. Aim for exam-quality notation and labels.",nodes:[["entity","Customer"],["process","Process order"],["store","Products"],["store","Orders"]],edges:[["Customer","Process order","order details"],["Products","Process order","product / price data"],["Process order","Orders","order record"],["Process order","Customer","total / confirmation"]]},
+ {title:"School Absence Reporting",clues:{entity:["parent"],process:["reports","checks","stores","sends"],store:["student record","Attendance Records"],flow:["absence","acknowledgement"]},scenario:"A parent reports a student's absence. The system checks the student record, stores the absence in Attendance Records and sends an acknowledgement to the parent.",task:"Create a complete DFD from the scenario without adding unnecessary symbols.",nodes:[["entity","Parent"],["process","Record absence"],["store","Student Records"],["store","Attendance Records"]],edges:[["Parent","Record absence","student / absence details"],["Student Records","Record absence","student record"],["Record absence","Attendance Records","absence record"],["Record absence","Parent","acknowledgement"]]}
+];
+let qi=0,nodes=[],edges=[],tool=null,flowStart=null,history=[],idc=0;
+const svg=document.getElementById("canvas"), ng=document.getElementById("nodes"),eg=document.getElementById("edges");
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tabs button,.panel").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById(b.dataset.tab).classList.add("active")});
+document.querySelectorAll(".tool").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tool").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");tool=b.dataset.tool;flowStart=null});
+function loadQ(){let q=scenarios[qi];savedSelection=null;document.getElementById("qbadge").textContent=`Practice ${qi+1} of ${scenarios.length}`;document.getElementById("qtitle").textContent=q.title;document.getElementById("qscenario").innerHTML=esc(q.scenario);document.getElementById("qtask").textContent=q.task;document.getElementById("prog").style.width=((qi+1)/scenarios.length*100)+"%";clearCanvas()}
+function pos(evt){let p=svg.createSVGPoint();p.x=evt.clientX;p.y=evt.clientY;return p.matrixTransform(svg.getScreenCTM().inverse())}
+svg.addEventListener("click",e=>{if(e.target.closest(".node"))return;if(!tool||tool==="flow")return;let p=pos(e);addNode(tool,p.x,p.y,tool==="entity"?"Type entity name":tool==="process"?"Type process name":"Type store name")});
+function addNode(type,x,y,label){history.push(JSON.stringify({nodes,edges}));let n={id:"n"+(++idc),type,x,y,label};nodes.push(n);render()}
+function addEdge(a,b,label="data"){
+ let A=nodes.find(n=>n.id===a),B=nodes.find(n=>n.id===b);
+ if(!A||!B)return;
+ let warning=invalidConnectionMessage(A.type,B.type);
+ if(warning){showMainWarning(warning);return;}
+ history.push(JSON.stringify({nodes,edges}));
+ edges.push({id:"e"+(++idc),a,b,label});
+ render();
+}
+
+function edgeLaneOffset(edgeList,e){
+ const opposite=edgeList.find(x=>x.a===e.b&&x.b===e.a);
+ if(!opposite)return 0;
+
+ // IMPORTANT:
+ // Each arrow calculates its perpendicular from its OWN direction.
+ // The reverse arrow therefore already has the opposite perpendicular.
+ // Returning the SAME lane value for both directions moves them onto
+ // opposite sides of the centre line, creating two true parallel arrows.
+ return 1;
+}
+function edgeGeometry(nodeList,edgeList,e){
+ let a=nodeList.find(n=>n.id===e.a),b=nodeList.find(n=>n.id===e.b);
+ if(!a||!b)return null;
+
+ let dx=b.x-a.x,dy=b.y-a.y,L=Math.hypot(dx,dy)||1,ux=dx/L,uy=dy/L;
+ let px=-uy,py=ux;
+
+ let padA=a.type==="entity"?66:a.type==="process"?66:65;
+ let padB=b.type==="entity"?70:b.type==="process"?70:68;
+ let lane=edgeLaneOffset(edgeList,e);
+
+ // Opposite flows are two separate parallel arrows.
+ // Each complete arrow, including its arrowhead, is offset sideways.
+ let laneOffset=lane*26;
+
+ let sx=a.x+ux*padA+px*laneOffset;
+ let sy=a.y+uy*padA+py*laneOffset;
+ let ex=b.x-ux*padB+px*laneOffset;
+ let ey=b.y-uy*padB+py*laneOffset;
+
+ let mx=(sx+ex)/2+px*(lane?10:0);
+ let my=(sy+ey)/2+py*(lane?10:0)-13;
+
+ return {a,b,sx,sy,ex,ey,mx,my,lane};
+}
+function render(){ng.innerHTML="";eg.innerHTML="";edges.forEach(e=>{let g=edgeGeometry(nodes,edges,e);if(!g)return;let {sx,sy,ex,ey,mx,my}=g;
+   eg.innerHTML+=`<line class="edge" x1="${sx}" y1="${sy}" x2="${ex}" y2="${ey}" marker-end="url(#arrow)"/><foreignObject x="${mx-58}" y="${my}" width="116" height="28"><input xmlns="http://www.w3.org/1999/xhtml" class="edge-input main-edge-input" data-eid="${e.id}" value="${esc(e.label)}" aria-label="Data flow label"/></foreignObject>`});
+ nodes.forEach(n=>{let shape=n.type==="entity"?`<ellipse rx="68" ry="31" fill="white" stroke="#172033" stroke-width="2"/>`:n.type==="process"?`<rect x="-68" y="-31" width="136" height="62" fill="white" stroke="#172033" stroke-width="2"/>`:`<path d="M-68 -27 H68 M-68 27 H68" stroke="#172033" stroke-width="2"/>`;ng.innerHTML+=`<g class="node" data-id="${n.id}" transform="translate(${n.x},${n.y})">${shape}<foreignObject x="-60" y="-14" width="120" height="30"><input xmlns="http://www.w3.org/1999/xhtml" class="node-input" data-nid="${n.id}" value="${esc(n.label)}" aria-label="Symbol name"/></foreignObject></g>`});
+ bindNodes();
+ document.querySelectorAll(".main-edge-input").forEach(inp=>{
+   inp.oninput=()=>{let e=edges.find(x=>x.id===inp.dataset.eid);if(e)e.label=inp.value;mainHint(analyseHints(nodes,edges))};
+   inp.onclick=e=>e.stopPropagation();
+   inp.onpointerdown=e=>e.stopPropagation();
+ });
+}
+function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+function bindNodes(){
+ document.querySelectorAll(".node-input").forEach(inp=>{
+   inp.oninput=e=>{let n=nodes.find(x=>x.id===inp.dataset.nid); if(n)n.label=inp.value;mainHint(analyseHints(nodes,edges))};
+   inp.onclick=e=>e.stopPropagation();
+   inp.ondblclick=e=>e.stopPropagation();
+   inp.onpointerdown=e=>e.stopPropagation();
+ });
+ document.querySelectorAll(".node").forEach(g=>{
+   g.onclick=e=>{
+     if(e.target.classList&&e.target.classList.contains("node-input"))return;
+     e.stopPropagation();
+     if(tool==="flow"){
+       if(!flowStart){
+         flowStart=g.dataset.id;
+         let sh=g.querySelector("ellipse,rect,path");
+         if(sh)sh.setAttribute("stroke","#2563eb");
+       } else if(flowStart!==g.dataset.id){
+         addEdge(flowStart,g.dataset.id);
+         flowStart=null;
+       }
+     }
+   };
+
+   g.onpointerdown=e=>{
+     if(tool==="flow"||(e.target.classList&&e.target.classList.contains("node-input")))return;
+     e.preventDefault();
+     e.stopPropagation();
+
+     const id=g.dataset.id;
+     const n=nodes.find(x=>x.id===id);
+     if(!n)return;
+
+     const first=pos(e);
+     const offsetX=first.x-n.x, offsetY=first.y-n.y;
+     const pointerId=e.pointerId;
+     g.setPointerCapture(pointerId);
+
+     function move(ev){
+       const p=pos(ev);
+       n.x=Math.max(72,Math.min(878,p.x-offsetX));
+       n.y=Math.max(38,Math.min(552,p.y-offsetY));
+
+       // Move the SVG group directly while dragging. This avoids rebuilding
+       // the DOM on every pointer event, which previously interrupted drag.
+       g.setAttribute("transform",`translate(${n.x},${n.y})`);
+
+       // Update connected arrows live without a full re-render.
+       updateEdgesLive();
+     }
+     function up(ev){
+       try{g.releasePointerCapture(pointerId)}catch(err){}
+       g.removeEventListener("pointermove",move);
+       g.removeEventListener("pointerup",up);
+       g.removeEventListener("pointercancel",up);
+       render();
+     }
+     g.addEventListener("pointermove",move);
+     g.addEventListener("pointerup",up);
+     g.addEventListener("pointercancel",up);
+   };
+ });
+}
+
+function updateEdgesLive(){
+ eg.innerHTML="";
+ edges.forEach(e=>{
+   let g=edgeGeometry(nodes,edges,e);if(!g)return;
+   let {sx,sy,ex,ey,mx,my}=g;
+   eg.innerHTML+=`<line class="edge" x1="${sx}" y1="${sy}" x2="${ex}" y2="${ey}" marker-end="url(#arrow)"/><foreignObject x="${mx-58}" y="${my}" width="116" height="28"><input xmlns="http://www.w3.org/1999/xhtml" class="edge-input main-edge-input" data-eid="${e.id}" value="${esc(e.label)}" aria-label="Data flow label"/></foreignObject>`;
+ });
+ document.querySelectorAll(".main-edge-input").forEach(inp=>{
+   inp.oninput=()=>{let e=edges.find(x=>x.id===inp.dataset.eid);if(e)e.label=inp.value;mainHint(analyseHints(nodes,edges))};
+   inp.onclick=e=>e.stopPropagation();inp.onpointerdown=e=>e.stopPropagation();
+ });
+}
+function clearCanvas(){
+ nodes=[];edges=[];history=[];render();
+ let f=document.getElementById("dfdFeedback");
+ f.className="feedback";
+ f.innerHTML="";
+}
+function undo(){if(!history.length)return;let st=JSON.parse(history.pop());nodes=st.nodes;edges=st.edges;clearMainFlowSelection();render();mainHint(analyseHints(nodes,edges))}
+function norm(s){return s.toLowerCase().replace(/[^a-z0-9]/g,"")}
+function invalidConnectionMessage(typeA,typeB){
+ if(typeA==="entity"&&typeB==="entity"){
+   return "You should not normally connect one external entity directly to another external entity. In a DFD, data should pass through a process because the system needs to handle, check or transform the data.";
+ }
+ if(typeA==="store"&&typeB==="store"){
+   return "You should not normally connect one data store directly to another data store. In a DFD, a process should sit between them because data is normally read, updated or transformed by a process.";
+ }
+ return "";
+}
+function showMainWarning(message){
+ let f=document.getElementById("dfdFeedback");
+ f.className="feedback warn";
+ f.innerHTML=`<strong>Notation warning:</strong> ${message}`;
+}
+function showExamWarning(i,message){
+ let f=document.getElementById(`examFeedback${i}`);
+ f.className="exam-feedback warn";
+ f.innerHTML=`<strong>Notation warning:</strong> ${message}`;
+}
+
+function clearMainFlowSelection(){
+ flowStart=null;
+ document.querySelectorAll("#nodes .node").forEach(g=>{
+   let sh=g.querySelector("ellipse,rect,path");
+   if(sh)sh.setAttribute("stroke","#172033");
+ });
+}
+function clearExamFlowSelection(i){
+ let st=examState[i];
+ st.flowStart=null;
+ document.querySelectorAll(`#examNodes${i} .node`).forEach(g=>{
+   let sh=g.querySelector("ellipse,rect,path");
+   if(sh)sh.setAttribute("stroke","#172033");
+ });
+}
+function mainHint(message,good=false){
+ let h=document.getElementById("liveHint");
+ if(!h)return;
+ h.className="hintbox"+(good?" good":"");
+ h.innerHTML=`<strong>${good?"Good progress":"Hint"}:</strong> ${message}`;
+}
+function examHint(i,message,good=false){
+ let h=document.getElementById(`examHint${i}`);
+ if(!h)return;
+ h.className="hintbox"+(good?" good":"");
+ h.innerHTML=`<strong>${good?"Good progress":"Hint"}:</strong> ${message}`;
+}
+function analyseHints(nodeList,edgeList){
+ if(!nodeList.length) return "Start by adding the external entity and the main process from the scenario.";
+ if(nodeList.some(n=>/^type /i.test(n.label))) return "Rename each symbol so it matches the scenario. Processes should usually use a verb phrase, such as “Process order”.";
+ if(!nodeList.some(n=>n.type==="process")) return "Add a process. Data should normally move through a process rather than directly between entities or stores.";
+ if(edgeList.some(e=>!e.label || norm(e.label)==="data")) return "One or more arrows still have the default label. Replace “data” with what is actually being transferred, such as “booking details” or “confirmation”.";
+ let linked=new Set();
+ edgeList.forEach(e=>{linked.add(e.a);linked.add(e.b)});
+ let isolated=nodeList.filter(n=>!linked.has(n.id));
+ if(isolated.length) return `Connect ${isolated[0].label} to the rest of the diagram using an appropriate data flow.`;
+ return "Your structure looks sensible so far. Check that every arrow points in the correct direction and each label describes the data being transferred.";
+}
+function checkDiagram(){let q=scenarios[qi],score=0,total=q.nodes.length+q.edges.length,missing=[];
+ q.nodes.forEach(([t,l])=>{if(nodes.some(n=>n.type===t&&(norm(n.label).includes(norm(l))||norm(l).includes(norm(n.label)))))score++;else missing.push(`${t}: ${l}`)});
+ q.edges.forEach(([a,b,l])=>{let A=nodes.find(n=>norm(n.label).includes(norm(a))||norm(a).includes(norm(n.label))),B=nodes.find(n=>norm(n.label).includes(norm(b))||norm(b).includes(norm(n.label)));if(A&&B&&edges.some(e=>e.a===A.id&&e.b===B.id))score++;else missing.push(`flow: ${a} → ${b}`)});
+ let pct=Math.round(score/total*100),f=document.getElementById("dfdFeedback");f.className="feedback "+(pct>=75?"ok":"bad");f.innerHTML=`<strong>${score}/${total} key features detected (${pct}%).</strong><br>${pct>=75?"Strong coverage. Check that every arrow is clearly labelled with the data being transferred.":"Still needed: "+missing.slice(0,5).join("; ")}<br><span class="small">Automatic checking accepts sensible wording variations, but your teacher should make the final judgement on exam-quality notation.</span>`;mainHint(pct>=75?"You are close. Check arrow directions and labels before moving on.":analyseHints(nodes,edges),pct>=90)}
+function showModel(){clearCanvas();let q=scenarios[qi],coords=[[120,120],[450,280],[780,110],[780,440],[120,440]];q.nodes.forEach((x,i)=>{nodes.push({id:"n"+(++idc),type:x[0],label:x[1],x:coords[i][0],y:coords[i][1]})});q.edges.forEach(x=>{let a=nodes.find(n=>n.label===x[0]),b=nodes.find(n=>n.label===x[1]);edges.push({id:"e"+(++idc),a:a.id,b:b.id,label:x[2]})});render()}
+function nextQ(){qi=(qi+1)%scenarios.length;loadQ()} function prevQ(){qi=(qi-1+scenarios.length)%scenarios.length;loadQ()} loadQ();
+
+
+const examQs=[
+ {
+  title:"Sports Centre Membership",
+  marks:4,
+  scenario:"A sports centre uses an online membership system. A member submits their membership number. The system retrieves membership details from a Member Records data store and sends the membership status to the member.",
+  task:"Draw a data flow diagram for this part of the system.",
+  nodes:[["entity","Member"],["process","Check membership"],["store","Member Records"]],
+  edges:[["Member","Check membership","membership number"],["Member Records","Check membership","membership details"],["Check membership","Member","membership status"]]
+ },
+ {
+  title:"School Trip Booking",
+  marks:6,
+  scenario:"A school trip system receives trip choices from a student. It checks trip information held in a Trips data store, saves the student's choice in a Bookings data store and returns a booking confirmation.",
+  task:"Draw a data flow diagram showing the movement of data.",
+  nodes:[["entity","Student"],["process","Book trip"],["store","Trips"],["store","Bookings"]],
+  edges:[["Student","Book trip","trip choice"],["Trips","Book trip","trip information"],["Book trip","Bookings","booking details"],["Book trip","Student","booking confirmation"]]
+ },
+ {
+  title:"Online Retail Returns",
+  marks:6,
+  scenario:"An online retailer receives return details from a customer. A returns process reads the original order from an Orders data store, saves the return to a Returns data store and sends return instructions to the customer.",
+  task:"Draw a data flow diagram for the returns process.",
+  nodes:[["entity","Customer"],["process","Process return"],["store","Orders"],["store","Returns"]],
+  edges:[["Customer","Process return","return details"],["Orders","Process return","original order"],["Process return","Returns","return record"],["Process return","Customer","return instructions"]]
+ },
+ {
+  title:"Gym Class Booking",
+  marks:6,
+  scenario:"A gym member submits a class-booking request. The system checks Class Availability, records a successful booking in Class Bookings and sends confirmation to the member.",
+  task:"Draw a data flow diagram using appropriate notation, connections and directions.",
+  nodes:[["entity","Member"],["process","Book class"],["store","Class Availability"],["store","Class Bookings"]],
+  edges:[["Member","Book class","booking request"],["Class Availability","Book class","availability"],["Book class","Class Bookings","booking record"],["Book class","Member","confirmation"]]
+ }
+];
+
+const examState = {};
+
+function buildExamQuestions(){
+ const host=document.getElementById("examQs");
+ host.innerHTML=examQs.map((q,i)=>`
+   <div class="quizq">
+     <span class="badge">${q.marks} marks</span>
+     <h3>Question ${i+1}: ${q.title}</h3>
+     <p>${q.scenario}</p>
+     <p><strong>${q.task}</strong></p>
+     <div class="exam-workspace">
+       <div class="exam-toolbar">
+         <button class="exam-tool" data-eq="${i}" data-tool="entity">⬭ Entity</button>
+         <button class="exam-tool" data-eq="${i}" data-tool="process">▭ Process</button>
+         <button class="exam-tool" data-eq="${i}" data-tool="store">═ Store</button>
+         <button class="exam-tool" data-eq="${i}" data-tool="flow">→ Data flow</button>
+       </div>
+       <svg class="exam-canvas" id="examCanvas${i}" viewBox="0 0 950 430">
+         <defs><marker id="examArrow${i}" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#344054"/></marker></defs>
+         <g id="examEdges${i}"></g><g id="examNodes${i}"></g>
+       </svg>
+       <div id="examHint${i}" class="hintbox" style="margin:10px"><strong>Hint:</strong> Identify the entity, process and any data stores before adding arrows.</div>
+       <div class="exam-actions">
+         <button class="btn primary" onclick="markExam(${i})">Mark my DFD</button>
+         <button class="btn secondary" onclick="showExamModel(${i})">Show model</button>
+         <button class="btn secondary" onclick="undoExam(${i})">Undo</button>
+         <button class="btn danger" onclick="clearExam(${i})">Clear</button>
+       </div>
+       <div id="examFeedback${i}" class="exam-feedback"></div>
+     </div>
+   </div>`).join("");
+
+ examQs.forEach((q,i)=>initExam(i));
+}
+
+function initExam(i){
+ examState[i]={nodes:[],edges:[],tool:null,flowStart:null,history:[],idc:0};
+ document.querySelectorAll(`.exam-tool[data-eq="${i}"]`).forEach(b=>{
+   b.onclick=()=>{
+     document.querySelectorAll(`.exam-tool[data-eq="${i}"]`).forEach(x=>x.classList.remove("selected"));
+     b.classList.add("selected");
+     examState[i].tool=b.dataset.tool;
+     examState[i].flowStart=null;
+   };
+ });
+ const svg=document.getElementById(`examCanvas${i}`);
+ svg.addEventListener("click",e=>{
+   if(e.target.closest(".node"))return;
+   const st=examState[i];
+   if(!st.tool||st.tool==="flow")return;
+   let p=examPos(i,e);
+   examAddNode(i,st.tool,p.x,p.y,st.tool==="entity"?"Type entity name":st.tool==="process"?"Type process name":"Type store name");
+ });
+}
+
+function examPos(i,evt){
+ let svg=document.getElementById(`examCanvas${i}`);
+ let p=svg.createSVGPoint();p.x=evt.clientX;p.y=evt.clientY;
+ return p.matrixTransform(svg.getScreenCTM().inverse());
+}
+
+function examAddNode(i,type,x,y,label){
+ let st=examState[i];
+ st.history.push(JSON.stringify({nodes:st.nodes,edges:st.edges}));
+ st.nodes.push({id:"x"+(++st.idc),type,x,y,label});
+ renderExam(i);
+ examHint(i,analyseHints(st.nodes,st.edges));
+}
+function examAddEdge(i,a,b,label="data"){
+ let st=examState[i];
+ let A=st.nodes.find(n=>n.id===a),B=st.nodes.find(n=>n.id===b);
+ if(!A||!B)return;
+ let warning=invalidConnectionMessage(A.type,B.type);
+ if(warning){showExamWarning(i,warning);return;}
+ st.history.push(JSON.stringify({nodes:st.nodes,edges:st.edges}));
+ st.edges.push({id:"xe"+(++st.idc),a,b,label});
+ renderExam(i);
+}
+
+function renderExam(i){
+ let st=examState[i],ng=document.getElementById(`examNodes${i}`),eg=document.getElementById(`examEdges${i}`);
+ ng.innerHTML="";eg.innerHTML="";
+ st.edges.forEach(e=>{
+   let g=edgeGeometry(st.nodes,st.edges,e);if(!g)return;
+   let {sx,sy,ex,ey,mx,my}=g;
+   eg.innerHTML+=`<line class="edge" x1="${sx}" y1="${sy}" x2="${ex}" y2="${ey}" marker-end="url(#examArrow${i})"/><foreignObject x="${mx-58}" y="${my}" width="116" height="28"><input xmlns="http://www.w3.org/1999/xhtml" class="edge-input exam-edge-input" data-eq="${i}" data-eid="${e.id}" value="${esc(e.label)}" aria-label="Data flow label"/></foreignObject>`;
+ });
+ st.nodes.forEach(n=>{
+   let shape=n.type==="entity"?`<ellipse rx="68" ry="31" fill="white" stroke="#172033" stroke-width="2"/>`:n.type==="process"?`<rect x="-68" y="-31" width="136" height="62" fill="white" stroke="#172033" stroke-width="2"/>`:`<path d="M-68 -27 H68 M-68 27 H68" stroke="#172033" stroke-width="2"/>`;
+   ng.innerHTML+=`<g class="node" data-id="${n.id}" transform="translate(${n.x},${n.y})">${shape}<foreignObject x="-60" y="-14" width="120" height="30"><input xmlns="http://www.w3.org/1999/xhtml" class="node-input exam-node-input" data-eq="${i}" data-nid="${n.id}" value="${esc(n.label)}" aria-label="Symbol name"/></foreignObject></g>`;
+ });
+ bindExamNodes(i);
+ document.querySelectorAll(`#examEdges${i} .exam-edge-input`).forEach(inp=>{
+   inp.oninput=()=>{let e=st.edges.find(x=>x.id===inp.dataset.eid);if(e)e.label=inp.value;examHint(i,analyseHints(st.nodes,st.edges))};
+   inp.onclick=e=>e.stopPropagation();
+   inp.onpointerdown=e=>e.stopPropagation();
+ });
+}
+
+function bindExamNodes(i){
+ let st=examState[i];
+ document.querySelectorAll(`#examCanvas${i} .exam-node-input`).forEach(inp=>{
+   inp.oninput=()=>{let n=st.nodes.find(x=>x.id===inp.dataset.nid);if(n)n.label=inp.value;examHint(i,analyseHints(st.nodes,st.edges))};
+   inp.onclick=e=>e.stopPropagation();inp.ondblclick=e=>e.stopPropagation();inp.onpointerdown=e=>e.stopPropagation();
+ });
+ document.querySelectorAll(`#examCanvas${i} .node`).forEach(g=>{
+   g.onclick=e=>{
+     if(e.target.classList&&e.target.classList.contains("exam-node-input"))return;
+     e.stopPropagation();
+     if(st.tool==="flow"){
+       if(!st.flowStart){
+         st.flowStart=g.dataset.id;
+         let sh=g.querySelector("ellipse,rect,path");if(sh)sh.setAttribute("stroke","#2563eb");
+       }else if(st.flowStart!==g.dataset.id){
+         examAddEdge(i,st.flowStart,g.dataset.id);
+         st.flowStart=null;
+       }
+     }
+   };
+   g.onpointerdown=e=>{
+     if(st.tool==="flow"||(e.target.classList&&e.target.classList.contains("exam-node-input")))return;
+     e.preventDefault();e.stopPropagation();
+     let n=st.nodes.find(x=>x.id===g.dataset.id);if(!n)return;
+     let first=examPos(i,e),offsetX=first.x-n.x,offsetY=first.y-n.y,pid=e.pointerId;
+     g.setPointerCapture(pid);
+     function move(ev){
+       let p=examPos(i,ev);
+       n.x=Math.max(72,Math.min(878,p.x-offsetX));n.y=Math.max(38,Math.min(392,p.y-offsetY));
+       g.setAttribute("transform",`translate(${n.x},${n.y})`);
+       updateExamEdgesLive(i);
+     }
+     function up(){
+       try{g.releasePointerCapture(pid)}catch(err){}
+       g.removeEventListener("pointermove",move);g.removeEventListener("pointerup",up);g.removeEventListener("pointercancel",up);
+       renderExam(i);
+     }
+     g.addEventListener("pointermove",move);g.addEventListener("pointerup",up);g.addEventListener("pointercancel",up);
+   };
+ });
+}
+
+function updateExamEdgesLive(i){
+ let st=examState[i],eg=document.getElementById(`examEdges${i}`);eg.innerHTML="";
+ st.edges.forEach(e=>{
+   let g=edgeGeometry(st.nodes,st.edges,e);if(!g)return;
+   let {sx,sy,ex,ey,mx,my}=g;
+   eg.innerHTML+=`<line class="edge" x1="${sx}" y1="${sy}" x2="${ex}" y2="${ey}" marker-end="url(#examArrow${i})"/><foreignObject x="${mx-58}" y="${my}" width="116" height="28"><input xmlns="http://www.w3.org/1999/xhtml" class="edge-input exam-edge-input" data-eq="${i}" data-eid="${e.id}" value="${esc(e.label)}" aria-label="Data flow label"/></foreignObject>`;
+ });
+ document.querySelectorAll(`#examEdges${i} .exam-edge-input`).forEach(inp=>{
+   inp.oninput=()=>{let e=st.edges.find(x=>x.id===inp.dataset.eid);if(e)e.label=inp.value;examHint(i,analyseHints(st.nodes,st.edges))};
+   inp.onclick=e=>e.stopPropagation();inp.onpointerdown=e=>e.stopPropagation();
+ });
+}
+
+function clearExam(i){
+ examState[i].nodes=[];examState[i].edges=[];examState[i].history=[];examState[i].flowStart=null;
+ renderExam(i);
+ let f=document.getElementById(`examFeedback${i}`);
+ f.className="exam-feedback";
+ f.innerHTML="";
+ examHint(i,"Identify the external entity, the process and any data stores mentioned in the question before drawing the flows.");
+}
+function undoExam(i){
+ let st=examState[i];if(!st.history.length)return;
+ let old=JSON.parse(st.history.pop());st.nodes=old.nodes;st.edges=old.edges;
+ clearExamFlowSelection(i);renderExam(i);examHint(i,analyseHints(st.nodes,st.edges));
+}
+function showExamModel(i){
+ clearExam(i);let st=examState[i],q=examQs[i];
+ let coords=[[125,90],[455,215],[800,85],[800,345],[125,345]];
+ q.nodes.forEach((x,j)=>st.nodes.push({id:"x"+(++st.idc),type:x[0],label:x[1],x:coords[j][0],y:coords[j][1]}));
+ q.edges.forEach(x=>{
+   let a=st.nodes.find(n=>n.label===x[0]),b=st.nodes.find(n=>n.label===x[1]);
+   st.edges.push({id:"xe"+(++st.idc),a:a.id,b:b.id,label:x[2]});
+ });
+ renderExam(i);
+}
+
+function keywordMatch(actual,expected){
+ let A=norm(actual),E=norm(expected);
+ if(A.includes(E)||E.includes(A))return true;
+ const synonyms={
+   "member":["gymmember","customer","user"],
+   "student":["pupil","learner"],
+   "customer":["user","shopper"],
+   "checkmembership":["validatemembership","verifymembership","membershipcheck"],
+   "booktrip":["tripbooking","processtripbooking","createbooking"],
+   "processreturn":["handlereturn","returnprocess","recordreturn"],
+   "bookclass":["classbooking","processbooking","createclassbooking"]
+ };
+ return (synonyms[E]||[]).some(x=>A.includes(x));
+}
+
+function markExam(i){
+ let st=examState[i],q=examQs[i],featureScore=0,total=q.nodes.length+q.edges.length,missing=[];
+ q.nodes.forEach(([t,l])=>{
+   if(st.nodes.some(n=>n.type===t&&keywordMatch(n.label,l)))featureScore++;
+   else missing.push(`${t}: ${l}`);
+ });
+ q.edges.forEach(([a,b,l])=>{
+   let A=st.nodes.find(n=>keywordMatch(n.label,a)),B=st.nodes.find(n=>keywordMatch(n.label,b));
+   if(A&&B&&st.edges.some(e=>e.a===A.id&&e.b===B.id))featureScore++;
+   else missing.push(`flow: ${a} → ${b}`);
+ });
+
+ // Additional notation/label checks used to scale to the advertised mark value.
+ let labelQuality=st.edges.length?st.edges.filter(e=>norm(e.label)!=="data"&&norm(e.label).length>=3).length/st.edges.length:0;
+ let correctTypes=q.nodes.filter(([t,l])=>st.nodes.some(n=>n.type===t&&keywordMatch(n.label,l))).length/q.nodes.length;
+ let coverage=featureScore/total;
+ let raw=(coverage*0.75)+(labelQuality*0.15)+(correctTypes*0.10);
+ let marks=Math.max(0,Math.min(q.marks,Math.round(raw*q.marks)));
+
+ let f=document.getElementById(`examFeedback${i}`);
+ f.className="exam-feedback "+(marks>=Math.ceil(q.marks*0.65)?"ok":"bad");
+ let band=marks===q.marks?"Full-mark standard detected.":marks>=Math.ceil(q.marks*0.65)?"Good exam response.":"More of the scenario needs to be represented accurately.";
+ f.innerHTML=`<div class="exam-score">${marks}/${q.marks} marks</div><strong>${band}</strong><br>
+ ${missing.length?`Check: ${missing.slice(0,5).join("; ")}.`:"All key scenario features were detected."}
+ <br><span class="small">The automated mark is a practice estimate. It checks expected symbols, direction of connections, coverage and whether flows are labelled. A teacher should make the final judgement where students use unusual but valid wording.</span>`;
+ examHint(i,marks===q.marks?"This attempt has all expected features. Review the diagram for clarity and neatness.":analyseHints(st.nodes,st.edges),marks===q.marks);
+}
+
+buildExamQuestions();
+
+</script>
+</body></html>
